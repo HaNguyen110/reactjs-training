@@ -8,10 +8,10 @@ class App extends React.Component {
     <div className="App">
       <Navbar />
       <Sidebar 
-        title={this.props.sidebarTitle} 
-        now={this.props.rightnow} 
-        menu={this.props.menu}/>
-      <Main />
+        title ={this.props.sidebarTitle} 
+        now   ={this.props.rightnow} 
+        menu  ={this.props.menu}/>
+      <Main menu={this.props.menu} />
       <Footer />
     </div>
   );
@@ -68,22 +68,51 @@ function Navbar(){
 //and also give user the ability to select items on the menu 
 class Main extends Component {
   state = {
-    orders: [],
-    inputValue: ''
+    orders: [
+      // {
+      //   customer: 'Me',
+      //   item: [
+      //     {name: 'Espresso', price: 3.99, amt: 2},
+      //     {name: 'Bluberry', price: 2.99, amt: 1}
+      //   ]
+      // }
+    ],
+    inputValue: '',
+    menuValue: 'none'
   }
 
-  renderOrder = (order, idx) => <OrderItem order={order} key={idx} />
+renderOrder = (order, idx) => <OrderItem order={order} key={idx} />
 
-  handleInputChange = (event) => {
-   // console.log(event.target.value);
-   const {value} = event.target
-    this.setState((prevState) => {
-      return {
-        orders: prevState.orders,
-        inputValue: value
+onMenuSelected = (Event) => this.setState({ menuValue: Event.target.value})
+
+handleInputChange = (Event) => this.setState({ inputValue: Event.target.value})
+
+renderMenuSelect = () => {
+  const keys = Object.keys(this.props.menu)
+  return (
+    <select value={this.state.menuValue} onChange={this.onMenuSelected}>
+      <option>Select Menu</option>
+      {
+        keys.map((category, idx) => {
+          return(
+            <option value = {category} key={idx}>{category}</option>
+          )
+        })
       }
-    })
-  }
+    </select>
+  )
+}
+
+  // handleInputChange = (event) => {
+  //  // console.log(event.target.value);
+  //  const {value} = event.target
+  //   this.setState((prevState) => {
+  //     return {
+  //       orders: prevState.orders,
+  //       inputValue: value
+  //     }
+  //   })
+  // }
 
 
 
@@ -106,10 +135,16 @@ class Main extends Component {
           <hr />
           <p>
             Enter item here: &nbsp;
+            {this.renderMenuSelect()}
+            {
+            /* 
             <input 
             name="selected-item-input" 
             value={this.state.inputValue}
-            onChange={this.handleInputChange}/>
+            onChange={this.handleInputChange}
+            /> 
+            */
+            }
             <button>Order</button>
           </p>
         </div>
@@ -149,7 +184,6 @@ function Sidebar(props){
       <h2>{props.title}</h2>
       <p>Last updated: {props.now}</p>
       <hr />
-      <p>
         <em>Coffee</em>
         <ul>
           {
@@ -162,7 +196,6 @@ function Sidebar(props){
             })
           }
         </ul>
-      </p>
     </div>
   )
 }
