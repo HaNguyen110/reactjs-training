@@ -2,19 +2,20 @@
 import React, { Component } from 'react';
 import './App.css';
 
-class App extends React.Component {
+class App extends Component {
   render(){
-  return (
-    <div className="App">
-      <Navbar />
-      <Sidebar 
-        title ={this.props.sidebarTitle} 
-        now   ={this.props.rightnow} 
-        menu  ={this.props.menu}/>
-      <Main menu={this.props.menu} />
-      <Footer />
-    </div>
-  );
+    return (
+      <div className="App">
+        <Navbar />
+        <Sidebar 
+          title ={this.props.sidebarTitle} 
+          now   ={this.props.rightnow} 
+          menu  ={this.props.menu}
+        />
+        <Main menu={this.props.menu} />
+        <Footer />
+      </div>
+    )
   }
 }
 
@@ -26,31 +27,23 @@ App.defaultProps = {
     .join(" "),
     menu:{
       Coffee: [
-        {name: 'Espresso',          price: 3.99 },
-        {name: 'Cafe Latte',        price: 3.50 },
-        {name: 'Drip Coffee',       price: 1.99 },
-        {name: 'Iced Coffee',       price: 2.99 },
-        {name: 'Cold Brew Coffee',  price: 4.99 },
-        {name: 'Caffee Americano',  price: 2.99 },
-        {name: 'Cappucino',         price: 3.50 },
-        {name: 'Cafe Mocha',        price: 4.50 }
+        {id: 1, name: 'Espresso',          price: 3.99 },
+        {id: 2, name: 'Cafe Latte',        price: 3.50 },
+        {id: 3, name: 'Drip Coffee',       price: 1.99 },
+        {id: 4, name: 'Iced Coffee',       price: 2.99 },
+        {id: 5, name: 'Cold Brew Coffee',  price: 4.99 },
+        {id: 6, name: 'Caffee Americano',  price: 2.99 },
+        {id: 7, name: 'Cappucino',         price: 3.50 },
+        {id: 8, name: 'Cafe Mocha',        price: 4.50 }
       ],
   
       bakery: [
-        {name: 'Split Pea Soup',        price: 2.99 },
-        {name: 'Pumpkin Muffin',        price: 2.50 },
-        {name: 'Cinnamon Raisin Bagel', price: 2.99 }
+        {id: 9,   name: 'Split Pea Soup',        price: 2.99 },
+        {id: 10,  name: 'Pumpkin Muffin',        price: 2.50 },
+        {id: 11,  name: 'Cinnamon Raisin Bagel', price: 2.99 }
       ],
   
-      specials: {
-        Mon: 'Split Pea Soup',
-        Tue: 'Tacos',
-        Web: 'Paella',
-        Thu: 'Teriyaki Chicken',
-        Fri: 'Salmon Salad',
-        Sat: 'Mini-pizzas',
-        Sun: 'Pancakes, Egg, and Bacon'
-      }
+      
     }
 }
 
@@ -77,21 +70,25 @@ class Main extends Component {
       //   ]
       // }
     ],
-    inputValue: '',
-    menuValue: 'none'
+    
+    menuValue: 'none',
+    menuItemValue: 'none',
+    menuItemAmountValue: 1,
   }
 
 renderOrder = (order, idx) => <OrderItem order={order} key={idx} />
 
-onMenuSelected = (Event) => this.setState({ menuValue: Event.target.value})
+onMenuSelected = ({target}) => this.setState({ menuValue: target.value})
 
-handleInputChange = (Event) => this.setState({ inputValue: Event.target.value})
+onMenuItemSelected = ({target}) => this.setState({ menuItemValue: target.value })
+
+handleItemAmountChange = ({target}) => this.setState({ menuItemAmountValue: target.value})
 
 renderMenuSelect = () => {
   const keys = Object.keys(this.props.menu)
   return (
     <select value={this.state.menuValue} onChange={this.onMenuSelected}>
-      <option>Select Menu</option>
+      <option value={'none'}>Select Menu</option>
       {
         keys.map((category, idx) => {
           return(
@@ -103,29 +100,70 @@ renderMenuSelect = () => {
   )
 }
 
-  // handleInputChange = (event) => {
-  //  // console.log(event.target.value);
-  //  const {value} = event.target
-  //   this.setState((prevState) => {
-  //     return {
-  //       orders: prevState.orders,
-  //       inputValue: value
-  //     }
-  //   })
-  // }
+renderMenuItemSelect = () => {
+  const {menuValue} =this.state
+  if( menuValue === 'none') return null
+  const items = this.props.menu[menuValue]
 
+  return (
+    <select 
+      value={this.state.menuItemValue} 
+      onChange={this.onMenuItemSelected}>
+        <option value={'none'}>Select Item</option>
+        {
+          items.map((item) => {
+            return(
+              <option value={item.name} key={item.id}>
+                {item.name} - {item.price.toFixed(2)}
+              </option>
+            )
+          })
+        }
+    </select>
+  )
+}
 
+renderMenuItemAmountInput = () => {
+  if (this.state.menuItemValue === 'none') return null
+
+  return(
+    <input 
+      value={this.state.menuItemAmountValue}
+      onChange={this.handleItemAmountChange}  
+    />
+  )
+}
+
+handleOrderSubmit = ( ) => {
+  const { menuItemValue, menuItemAmountValue, orders } = this.state
+  
+  const newOrder = {
+    customer: `Order #${ orders.length+1 }`,
+    items: [
+      { name: menuItemValue, amt: menuItemAmountValue }
+    ]
+  }
+  
+  this.setState( (prevState) => {
+    return {
+      orders: [ ...prevState.orders, newOrder ],
+      menuValue: prevState.menuValue,
+      menuItemValue: 'none',
+      menuItemAmountValue: 1
+    }
+  })
+}
 
   render(){
     return(
       <div className='App--main'>
         <div>
           <h2>orders</h2>
+          <hr /> 
         </div>
-        <hr />
         <ul>
           {
-            this.state.orders.length > 0 ?
+            this.state.orders.length ?
             this.state.orders.map((order, idx) => this.renderOrder(order, idx) )
             :
             <li key={-1}>No orders yet!</li>
@@ -133,20 +171,19 @@ renderMenuSelect = () => {
         </ul>
         <div className="select-menu-item">
           <hr />
-          <p>
             Enter item here: &nbsp;
             {this.renderMenuSelect()}
+            {this.renderMenuItemSelect()}
+            {this.renderMenuItemAmountInput()}
             {
-            /* 
-            <input 
-            name="selected-item-input" 
-            value={this.state.inputValue}
-            onChange={this.handleInputChange}
-            /> 
-            */
+              this.state.menuItemValue !== 'none' && 
+              <button 
+                style={{cursor:'pointer'}}
+                onClick={this.handleOrderSubmit}
+                >
+                  Order
+              </button>   
             }
-            <button>Order</button>
-          </p>
         </div>
       </div>
     )
@@ -155,7 +192,7 @@ renderMenuSelect = () => {
 
 
 function OrderItem(props) {
-  const{customer, items} = props.order
+  const{customer, items} = props.order  
   //const customer = props.order.customer
   //const customer = prop.order.items
   return(
@@ -172,7 +209,7 @@ function OrderItem(props) {
           })
         }
       </ul>
-      <br /> <br /> <br />
+      <br /> <br /> 
     </li>
   )
 }
