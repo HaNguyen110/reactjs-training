@@ -1,40 +1,35 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-/*============ Header =============*/
-
-header {
-  height: 100vh;
-  background: /*    linear-gradient(rgba(0,0,0,0.63),
-              rgba(0,0,0,0.5))*/
-              url(https://i.pinimg.com/originals/18/66/06/18660631f18bd2a4205c4dc0bd84501c.jpg)  
-              no-repeat center center/cover;
+/*=======Navbar========*/
+.logo {
+  width: 80px;
 }
 
-.Header--banner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50px);
-  width: 80%;
+.nav-link {
+  font-weight: 500;
+  letter-spacing: 0.6;
+  cursor: pointer;
 }
 
-.Header--text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+ul, li {
+  text-transform: uppercase;
 }
 
+.navbar-nav > li > a {
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
+}
 
-/*============= App ==============*/ 
+.navbar-nav > li > a.active,
+.navbar-nav > li > a:focus {
+  border-top: 0.1875rem solid #f9ab30;
+}
+
+/*============*/
 .App {
   text-align: center;
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  /*display: grid;*/
+  /* grid-template-columns: 1fr 1.5fr;
   grid-template-rows: 75px auto 50px;
-  min-height: 100vh;
+  min-height: 100vh; */
 }
 
 .App--navbar {
@@ -77,4 +72,26 @@ justify-content: space-between;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+.header-wraper {
+  position: relative;
+  background: url(header.jpg) no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 50vh;
+}
+
+.main-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+h1 {
+  color: #f9ab30;
+  text-transform: uppercase;
 }

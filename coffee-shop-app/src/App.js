@@ -1,14 +1,16 @@
-
-import React, { Component } from 'react';
-//import { Button } from 'reactstrap';
+import React, {Component} from 'react';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Nav from './components/Nav';
+import Header from '../src/components/Header';
 
 class App extends Component {
   render(){
     return (
       <div className="App">
-        <Navbar />
-        <Sidebar 
+        <Nav />
+        <Header />
+        <Sidebar className="text-danger"
           title ={this.props.sidebarTitle} 
           now   ={this.props.rightnow} 
           menu  ={this.props.menu}
@@ -50,27 +52,13 @@ App.defaultProps = {
 
 
 
-function Navbar(){
-  return(
-    <div className='App--navbar'>
-      <h1>Coffee Shop</h1>
-    </div>
-  )
-}
+
 
 //main component should display the current orders
 //and also give user the ability to select items on the menu 
 class Main extends Component {
   state = {
-    orders: [
-      // {
-      //   customer: 'Me',
-      //   item: [
-      //     {name: 'Espresso', price: 3.99, amt: 2},
-      //     {name: 'Bluberry', price: 2.99, amt: 1}
-      //   ]
-      // }
-    ],
+    orders: [],
     
     menuValue: 'none',
     menuItemValue: 'none',
@@ -107,7 +95,7 @@ renderMenuItemSelect = () => {
   const items = this.props.menu[menuValue]
 
   return (
-    <select 
+    <select className="text-danger"
       value={this.state.menuItemValue} 
       onChange={this.onMenuItemSelected}>
         <option value={'none'}>Select Item</option>
@@ -245,4 +233,5 @@ function Footer(){
     </div>
   )
 }
+
 export default App;
